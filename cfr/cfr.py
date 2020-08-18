@@ -1,5 +1,7 @@
 from copy import copy
 from copy import deepcopy
+import json
+import yaml
 
 from tqdm import tqdm
 
@@ -7,6 +9,9 @@ from envs.toy_pokers import Node, KuhnPoker
 
 
 def update_pi(node: Node, policy: dict, pi_mi: list, pi_i: list):
+    """
+    update probability
+    """
     node.pi = pi_mi[node.player] * pi_i[node.player]
     node.pi_mi = pi_mi[node.player]
     node.pi_i = pi_i[node.player]
@@ -78,20 +83,42 @@ def update_strategy(strategy_profile: dict, average_strategy_profile: dict, info
     return
 
 
-def train():
+def train(num_iter):
     kuhn_poker = KuhnPoker()
     strategy_profile = get_initial_strategy(kuhn_poker.root, kuhn_poker.num_players)
     average_strategy_profile = deepcopy(strategy_profile)
 
-    for _ in tqdm(range(1000000)):
+    for _ in tqdm(range(num_iter)):
         update_pi(kuhn_poker.root, strategy_profile, [1.0 for _ in range(kuhn_poker.num_players + 1)], [1.0 for _ in range(kuhn_poker.num_players + 1)])
         update_node_values(kuhn_poker.root, strategy_profile)
         update_strategy(strategy_profile, average_strategy_profile, kuhn_poker.information_sets)
-    print(average_strategy_profile)
+
+    return average_strategy_profile
 
 
 def main():
-    train()
+    average_strategy_profile = train(1000000)
+    result = {}
+    for player, sigma in average_strategy_profile.items():
+        if player == -1:
+            continue
+        for info, p_dist in sigma.items():
+            add_dtd(result, info[0][0])
+            if len(info[1]) == 0:
+                history = "-"
+            else:
+                history = "-".join(info[1])
+            for action, p in p_dist.items():
+                add_dtd(result[info[0][0]], history)
+                result[info[0][0]][history][action] = p
+    with open("cfr_result.yaml", "w") as f:
+        yaml.dump(result, f)
+    return
+
+
+def add_dtd(d: dict, key):
+    if key not in d:
+        d[key] = {}
 
 
 if __name__ == "__main__":

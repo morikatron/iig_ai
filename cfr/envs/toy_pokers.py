@@ -1,8 +1,6 @@
 from collections import deque
 from itertools import combinations
 
-import numpy as np
-
 
 def add_list_to_dict(target_dict, key, value):
     if key in target_dict.keys():
@@ -11,8 +9,20 @@ def add_list_to_dict(target_dict, key, value):
         target_dict[key] = [value]
 
 
+class Card:
+    def __init__(self, rank, suit=None):
+        self.rank = rank
+        self.suit = suit
+
+    def __str__(self):
+        if self.suit is None:
+            return str(self.rank)
+        else:
+            return str(self.rank) + str(self.suit)
+
+
 class Node:
-    def __init__(self, player, terminal, eu=0):
+    def __init__(self, player: int, terminal: bool, eu: float = 0):
         self.children = {}
         self.player = player
         self.terminal = terminal
@@ -27,9 +37,9 @@ class Node:
         self.cv = 0
         self.cfr = {}  # counterfactual regret of not taking action a at history h(not information I)
         self.pi_i_sum = 0  # denominator of average strategy
-        self.pi_sigma_sum = {}  # numerator of averate strategy
+        self.pi_sigma_sum = {}  # numerator of average strategy
 
-    def expand_child_node(self, action, next_player, terminal, utility=0, private_cards=None):
+    def expand_child_node(self, action: str, next_player: int, terminal: bool, utility: float = 0, private_cards=None):
         next_node = Node(next_player, terminal, utility)
         self.children[action] = next_node
         self.cfr[action] = 0
@@ -38,18 +48,6 @@ class Node:
         next_node.history = self.history + [action] if self.player != -1 else self.history
         next_node.information = (next_node.private_cards[next_player], tuple(next_node.history))
         return next_node
-
-
-class Card:
-    def __init__(self, rank, suit=None):
-        self.rank = rank
-        self.suit = suit
-
-    def __str__(self):
-        if self.suit is None:
-            return str(self.rank)
-        else:
-            return str(self.rank) + str(self.suit)
 
 
 class KuhnPoker:
@@ -73,33 +71,33 @@ class KuhnPoker:
                 node = root.expand_child_node(str(*hand_0) + ',' + str(*hand_1), next_player, False, private_cards=private_cards)
                 add_list_to_dict(self.information_sets[next_player], node.information, node)
                 stack.append(node)
-                for action in ['check', 'bet']:  # player 0 actions
+                for action in ["check", "bet"]:  # player 0 actions
                     next_player = 1
                     node = node.expand_child_node(action, next_player, False)
                     add_list_to_dict(self.information_sets[next_player], node.information, node)
                     stack.append(node)
-                    if action == 'check':
-                        for action in ['check', 'bet']:  # player 1 actions
-                            if action == 'check':
+                    if action == "check":
+                        for action in ["check", "bet"]:  # player 1 actions
+                            if action == "check":
                                 utility = self._compute_utility(action, next_player, hand_0, hand_1)
                                 next_player = -1
                                 node = node.expand_child_node(action, next_player, True, utility)
                                 add_list_to_dict(self.information_sets[next_player], node.information, node)
                                 node = stack.pop()
-                            if action == 'bet':
+                            if action == "bet":
                                 next_player = 0
                                 node = node.expand_child_node(action, next_player, False)
                                 add_list_to_dict(self.information_sets[next_player], node.information, node)
                                 stack.append(node)
-                                for action in ['fold', 'call']:  # player 0 actions
+                                for action in ["fold", "call"]:  # player 0 actions
                                     utility = self._compute_utility(action, next_player, hand_0, hand_1)
                                     next_player = -1
                                     node = node.expand_child_node(action, next_player, True, utility)
                                     add_list_to_dict(self.information_sets[next_player], node.information, node)
                                     node = stack.pop()
-                    if action == 'bet':
+                    if action == "bet":
                         stack.append(node)
-                        for action in ['fold', 'call']:  # player 1 actions
+                        for action in ["fold", "call"]:  # player 1 actions
                             utility = self._compute_utility(action, next_player, hand_0, hand_1)
                             next_player = -1
                             node = node.expand_child_node(action, next_player, True, utility)
