@@ -1,7 +1,5 @@
-# iig_ai
-AI for Imperfect Information Game  
-
-このリポジトリはCounterfactual Regret MinimizationをPython3で実装したものです。
+# AI for Imperfect Information Game  
+このリポジトリは不完全情報ゲームのナッシュ均衡戦略を計算的に求めるアルゴリズム、Counterfactual Regret Minimization(CFR)をPython3で実装したものです。
 CFRについて解説したブログはこちらになります  
 
 ## Relevant Papers
