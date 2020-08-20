@@ -12,6 +12,7 @@ http://martin.zinkevich.org/publications/regretpoker.pdf
 ## Requirements
  - Python3
  - pyyaml
+ - tqdm
 
 ## Usage
   - clone this repo
