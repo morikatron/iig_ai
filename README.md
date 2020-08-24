@@ -1,6 +1,6 @@
 # AI for Imperfect Information Game  
 このリポジトリは不完全情報ゲームのナッシュ均衡戦略を計算的に求めるアルゴリズム、Counterfactual Regret Minimization(CFR)をPython3で実装したものです。
-CFRについて解説したブログはこちらになります  
+CFRについて解説したブログは[こちら](https://tech.morikatron.ai/entry/2020/08/31/100000 "こちら")になります  
 
 ## Relevant Papers
 - An Introduction to Counterfactual Regret Minimization, T. Neller, M. Lanctot 2013
