@@ -17,7 +17,7 @@ http://martin.zinkevich.org/publications/regretpoker.pdf
 ## Usage
   - clone this repo
  ```
- $ git clone https://github.com/morikatron/PPO.git
+ $ git clone https://github.com/morikatron/iig_ai.git
  ```
   - change directory and run 
  ```
