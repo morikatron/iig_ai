@@ -1,6 +1,5 @@
 from copy import copy
 from copy import deepcopy
-import json
 import yaml
 
 from tqdm import tqdm
@@ -111,7 +110,7 @@ def main():
             for action, p in p_dist.items():
                 add_dtd(result[info[0][0]], history)
                 result[info[0][0]][history][action] = p
-    with open("cfr_result.yaml", "w") as f:
+    with open("../sample_result.yaml", "w") as f:
         yaml.dump(result, f)
     return
 
