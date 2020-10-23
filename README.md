@@ -24,3 +24,6 @@ http://martin.zinkevich.org/publications/regretpoker.pdf
  $ cd iig_ai
  $ python cfr/cfr.py
  ```
+ 
+## Performance Example
+ ![vanilla cfr performance](https://github.com/morikatron/iig_ai/blob/master/assets/vanilla_cfr_performance.png)
